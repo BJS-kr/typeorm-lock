@@ -2,24 +2,16 @@ import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { Lock } from '../db/lock.entity';
 import { LessThanOrEqual, Repository } from 'typeorm';
 import { parseExpression } from 'cron-parser';
-import { CronExpression } from '@nestjs/schedule';
 
 @Injectable()
-export class LockService implements OnModuleInit {
+export class LockService {
   constructor(
     @Inject('LOCK_REPOSITORY')
     private readonly lockRepository: Repository<Lock>,
   ) {}
 
-  private readonly locks: { name: string; cronExpression: string }[] = [
-    {
-      name: 'getHello',
-      cronExpression: CronExpression.EVERY_5_SECONDS,
-    },
-  ];
-
-  async onModuleInit() {
-    for (const lock of this.locks) {
+  async makeInitialLock(locks: { name: string; cronExpression: string }[]) {
+    for (const lock of locks) {
       const atLeastOneLock = await this.lockRepository.findOne({
         where: {
           name: lock.name,

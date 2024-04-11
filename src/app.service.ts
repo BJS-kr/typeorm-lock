@@ -1,10 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { LockService } from './lock/lock.service';
 
 @Injectable()
-export class AppService {
+export class AppService implements OnModuleInit {
   constructor(private readonly lockService: LockService) {}
+
+  private readonly locks: { name: string; cronExpression: string }[] = [
+    {
+      name: 'getHello',
+      cronExpression: CronExpression.EVERY_5_SECONDS,
+    },
+  ];
+
+  onModuleInit() {
+    this.lockService.makeInitialLock(this.locks);
+  }
+
   getHello(): string {
     return 'Hello World!';
   }
