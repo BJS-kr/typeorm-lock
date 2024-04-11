@@ -40,7 +40,7 @@ export class LockService {
     }
   }
 
-  async wrapAsRetryable(
+  wrapAsRetryable(
     fn: () => any,
     retryOption: {
       attempts: number;
