@@ -27,7 +27,7 @@ export class AppService implements OnModuleInit {
   async exclusiveGetHello() {
     return this.lockService.executeExclusively(
       'getHello',
-      LockService.wrapAsRetryable(this.getHello, {
+      LockService.wrapAsRetryable(this.getHello.bind(this), {
         attempts: 3,
         delay: 1000,
         timeout: 5000,
